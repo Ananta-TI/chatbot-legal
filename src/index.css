@@ -1,0 +1,269 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root {
+  /* Colors */
+  --color-primary: #da291c;
+  --color-primary-active: #b01e0a;
+  --color-canvas: #060608;
+  --color-canvas-elevated: #1e1e22;
+  --color-canvas-light: #ffffff;
+  --color-ink: #ffffff;
+  --color-body: #969696;
+  --color-body-on-light: #181818;
+  --color-hairline: #2a2a2e;
+  --color-hairline-light: #ebebeb;
+
+  /* Spacing */
+  --spacing-xxxs: 4px;
+  --spacing-xxs: 8px;
+  --spacing-xs: 16px;
+  --spacing-sm: 24px;
+  --spacing-md: 32px;
+  --spacing-lg: 48px;
+  --spacing-xl: 64px;
+  --spacing-xxl: 96px;
+  --spacing-super: 128px;
+
+  /* Geometry */
+  --rounded-none: 0px;
+  --rounded-sm: 8px;
+  --rounded-full: 9999px;
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, sans-serif;
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-body);
+  font-family: var(--font-sans);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+
+/* clamp() replaces the old duplicate declarations — one definition per class */
+.display-mega {
+  font-size: clamp(40px, 6vw, 80px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+  text-wrap: balance;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+.display-lg {
+  font-size: clamp(26px, 4vw, 36px);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+  text-wrap: balance;
+}
+
+.display-md {
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  color: var(--color-ink);
+}
+
+.title-sm {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.005em;
+  color: var(--color-ink);
+}
+
+.body-md {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.65;
+  color: inherit;
+}
+
+.caption-uppercase {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+.section-band {
+  padding: var(--spacing-super) 0;
+}
+
+.section-light {
+  background-color: var(--color-canvas-light);
+  color: var(--color-body-on-light);
+}
+
+.section-light .display-lg,
+.section-light .display-md {
+  color: var(--color-body-on-light);
+}
+
+/* ============================================================
+   COMPONENTS — BUTTONS
+   ============================================================ */
+.btn {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: var(--rounded-none);
+  padding: 0 32px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: background-color 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;
+}
+
+.btn-primary {
+  background-color: var(--color-canvas-light);
+  color: #0a0a0a;
+  border-color: transparent;
+}
+
+.btn-primary:hover {
+  opacity: 0.88;
+}
+
+.btn-outline {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: var(--color-ink);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.btn-outline:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* ============================================================
+   COMPONENTS — CARDS
+   ============================================================ */
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.card-dark {
+  background-color: var(--color-canvas-elevated);
+  padding: var(--spacing-lg);
+  border-radius: var(--rounded-none);
+  border: 1px solid var(--color-hairline);
+}
+
+.card-light {
+  background-color: var(--color-canvas-light);
+  padding: var(--spacing-lg);
+  border-radius: var(--rounded-none);
+  border: 1px solid var(--color-hairline-light);
+  color: var(--color-body-on-light);
+}
+
+.card-light .display-md {
+  color: var(--color-body-on-light);
+}
+
+/* ============================================================
+   HERO PARALLAX LAYERS
+   These are baseline styles; motion transforms are applied
+   inline by Framer Motion in Hero.jsx.
+   ============================================================ */
+.background-layer {
+  position: absolute;
+  top: -10%;
+  left: 0;
+  width: 100%;
+  height: 120%;
+  background-size: cover;
+  background-position: center;
+  z-index: 1;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.shikigami-layer {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  width: 100%;
+  max-width: 800px;
+  height: 60%;
+  /* translateX(-50%) centers the element; Framer's y transform is additive on top */
+  transform: translateX(-50%);
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  mix-blend-mode: screen;
+  filter: blur(3px) drop-shadow(0 0 20px rgba(128, 0, 128, 0.6));
+  z-index: 2;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.higuruma-layer {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 100%;
+  max-width: 900px;
+  height: 90%;
+  /* translateX(-50%) centers the element; Framer's y transform is additive on top */
+  transform: translateX(-50%);
+  background-size: contain;
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  z-index: 3;
+  will-change: transform;
+  pointer-events: none;
+}
