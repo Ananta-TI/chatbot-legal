@@ -5,7 +5,7 @@ export default function Navbar() {
     <header style={{ height: '64px', backgroundColor: 'var(--color-canvas)', borderBottom: '1px solid var(--color-hairline)', position: 'sticky', top: 0, zIndex: 50 }}>
       <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '100%' }}>
         <h1 className="title-sm" style={{ letterSpacing: '1.4px', textTransform: 'uppercase' }}>
-          NTA AI.
+          LEGAL 
         </h1>
         <nav style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'center' }}>
           <Link to="/" className="caption-uppercase" style={{ color: 'var(--color-ink)', textDecoration: 'none' }}>Home</Link>
