@@ -224,6 +224,11 @@ export default function Hero() {
 
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const paluScrollY = useTransform(scrollYProgress, [0, 1], ["0%", "70%"]);
+  
+  // ── Tambahkan baris ini ──
+  // Nilai [1, 1.15] artinya saat posisi atas ukurannya normal (1), 
+  // dan pas di-scroll ke bawah akan membesar 15% (1.15).
+  const backgroundScale = useTransform(scrollYProgress, [0, 1], [1, 2.15]);
 
   // ── Animasi Mouse Parallax (Gerak ngikutin kursor) ──
   const mouseX = useMotionValue(0);
@@ -257,10 +262,13 @@ export default function Hero() {
       onMouseMove={handleMouseMove} // <-- Pasang deteksi mouse di area section ini
       className="min-h-screen flex flex-col justify-end pb-[72px] relative overflow-hidden bg-[#060608]"
     >
-      {/* ── 1. Background (Scroll Parallax) ── */}
+      {/* ── 1. Background (Scroll Parallax + Zoom) ── */}
       <motion.div
-        style={{ y: backgroundY }}
-        className="absolute inset-0 -top-[15%] w-full h-[130%] bg-[url('/images/background3.png')] bg-cover bg-center z-[1] pointer-events-none"
+        style={{ 
+          y: backgroundY, 
+          scale: backgroundScale 
+        }}
+        className="absolute inset-0 -top-[15%] w-full h-[130%] bg-[url('/images/background3.png')] bg-cover bg-center z-[1] pointer-events-none origin-center"
       />
 
       {/* ── 2. Palu (Scroll + Mouse Parallax) ── */}
