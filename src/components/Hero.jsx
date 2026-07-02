@@ -1,9 +1,8 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import gsap from "gsap";
-import MagneticEffect from "../context/MagneticEffect";
 
 /* =========================
    REVEAL BUTTON (DISESUAIKAN UNTUK DARK THEME)
@@ -16,7 +15,7 @@ function RevealButton({
   variant = "secondary",
   size = "md",
   className = "",
-}) {
+ }) {
   const buttonRef = useRef(null);
   const circleRef = useRef(null);
   const textRef = useRef(null);
@@ -59,9 +58,7 @@ function RevealButton({
 
   const getPointerPosition = (event) => {
     if (!buttonRef.current) return { x: 0, y: 0 };
-
     const rect = buttonRef.current.getBoundingClientRect();
-
     return {
       x: event.clientX - rect.left,
       y: event.clientY - rect.top,
@@ -70,7 +67,6 @@ function RevealButton({
 
   const moveCircle = (event, immediate = false) => {
     if (!circleRef.current) return;
-
     const { x, y } = getPointerPosition(event);
 
     if (immediate) {
@@ -80,7 +76,6 @@ function RevealButton({
         xPercent: -50,
         yPercent: -50,
       });
-
       return;
     }
 
@@ -97,7 +92,6 @@ function RevealButton({
 
     gsap.killTweensOf(circleRef.current);
     gsap.killTweensOf(textRef.current);
-
     moveCircle(event, true);
 
     gsap.set(circleRef.current, {
@@ -125,7 +119,6 @@ function RevealButton({
 
     gsap.killTweensOf(circleRef.current);
     gsap.killTweensOf(textRef.current);
-
     moveCircle(event, true);
 
     gsap.set(textRef.current, {
@@ -146,75 +139,93 @@ function RevealButton({
   };
 
   const buttonContent = (
-    <MagneticEffect>
+    <span
+      ref={buttonRef}
+      onMouseEnter={handleMouseEnter}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className={`group relative isolate inline-flex w-fit shrink-0 items-center justify-center
+        overflow-hidden rounded-full border
+        font-semibold uppercase leading-none tracking-[0.18em]
+        transition-[border-color,box-shadow,transform] duration-300
+        active:translate-y-[1px]
+        ${selectedSize}
+        ${selectedVariant.wrapper}
+        ${className}
+      `}
+    >
       <span
-        ref={buttonRef}
-        onMouseEnter={handleMouseEnter}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
+        ref={circleRef}
+        className={`pointer-events-none absolute z-0 aspect-square w-[260%]
+          rounded-full opacity-0
+          ${selectedVariant.circle}
+        `}
+        style={{
+          left: "50%",
+          top: "50%",
+          transform: "translate(-50%, -50%) scale(0)",
+        }}
+      />
+      <span
+        ref={textRef}
         className={`
-          group relative isolate inline-flex w-fit shrink-0 items-center justify-center
-          overflow-hidden rounded-full border
-          font-semibold uppercase leading-none tracking-[0.18em]
-          transition-[border-color,box-shadow,transform] duration-300
-          active:translate-y-[1px]
-          ${selectedSize}
-          ${selectedVariant.wrapper}
-          ${className}
+          relative z-10 flex items-center justify-center gap-2
+          whitespace-nowrap
+          ${selectedVariant.classText}
         `}
       >
-        <span
-          ref={circleRef}
-          className={`
-            pointer-events-none absolute z-0 aspect-square w-[260%]
-            rounded-full opacity-0
-            ${selectedVariant.circle}
-          `}
-          style={{
-            left: "50%",
-            top: "50%",
-            transform: "translate(-50%, -50%) scale(0)",
-          }}
-        />
-
-        <span
-          ref={textRef}
-          className={`
-            relative z-10 flex items-center justify-center gap-2
-            whitespace-nowrap
-            ${selectedVariant.classText}
-          `}
-        >
-          {children}
-        </span>
+        {children}
       </span>
-    </MagneticEffect>
+    </span>
   );
 
   if (to) {
-    return (
-      <Link to={to} className="inline-flex w-fit shrink-0">
-        {buttonContent}
-      </Link>
-    );
+    return <Link to={to}>{buttonContent}</Link>;
   }
 
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-      className="inline-flex w-fit shrink-0"
-    >
-      {buttonContent}
-    </a>
-  );
+  return <a href={href}>{buttonContent}</a>;
 }
+
+/* =========================
+   DATA PALU STATIS (TIDAK BERUBAH SAAT REFRESH)
+========================= */
+const FIXED_GAVELS = [
+  // --- GEROMBOLAN KIRI ---
+  { id: 1, top: "15%", left: "15%", scale: 1.4, rotate: 340 },
+  { id: 2, top: "25%", left: "8%", scale: 1, rotate: 115 },
+  { id: 3, top: "28%", left: "25%", scale: 1.5, rotate: 315 },
+  { id: 4, top: "45%", left: "12%", scale: 1.3, rotate: 100 }, 
+  { id: 5, top: "42%", left: "28%", scale: 0.6, rotate: 300 },
+  { id: 6, top: "58%", left: "18%", scale: 2.8, rotate: 135 },
+  { id: 7, top: "68%", left: "5%", scale: 0.5, rotate: 350 },
+  { id: 8, top: "78%", left: "15%", scale: 0.9, rotate: 225 },
+  { id: 9, top: "82%", left: "28%", scale: 0.4, rotate: 330 },
+  { id: 10, top: "20%", left: "32%", scale: 0.3, rotate: 160 }, 
+  { id: 11, top: "62%", left: "33%", scale: 1.35, rotate: 195 }, 
+  { id: 12, top: "35%", left: "2%", scale: 1.45, rotate: 175 },
+
+  // --- GEROMBOLAN KANAN ---
+  { id: 13, top: "12%", left: "82%", scale: 1.6, rotate: 140 },
+  { id: 14, top: "18%", left: "92%", scale: 1.4, rotate: 345 },
+  { id: 15, top: "28%", left: "75%", scale: 1.5, rotate: 200 },
+  { id: 16, top: "35%", left: "86%", scale: 1.4, rotate: 335 }, 
+  { id: 17, top: "48%", left: "76%", scale: 1.7, rotate: 155 },
+  { id: 18, top: "52%", left: "95%", scale: 1.5, rotate: 320 },
+  { id: 19, top: "65%", left: "85%", scale: 0.8, rotate: 115 },
+  { id: 20, top: "68%", left: "70%", scale: 0.4, rotate: 300 },
+  { id: 21, top: "82%", left: "88%", scale: 2.9, rotate: 235 },
+  { id: 22, top: "86%", left: "76%", scale: 0.5, rotate: 340 },
+  { id: 23, top: "18%", left: "68%", scale: 0.3, rotate: 290 }, 
+  { id: 24, top: "58%", left: "66%", scale: 2.35, rotate: 180 }, 
+];
+
 /* =========================
    HERO COMPONENT
 ========================= */
 export default function Hero() {
   const containerRef = useRef(null);
+  // State untuk menyimpan ID palu yang sedang meledak
+  const [explodedGavels, setExplodedGavels] = useState({});
 
   // ── Animasi Scroll Parallax (Atas-Bawah saat di-scroll) ──
   const { scrollYProgress } = useScroll({
@@ -224,62 +235,89 @@ export default function Hero() {
 
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const paluScrollY = useTransform(scrollYProgress, [0, 1], ["0%", "70%"]);
-  
-  // ── Tambahkan baris ini ──
-  // Nilai [1, 1.15] artinya saat posisi atas ukurannya normal (1), 
-  // dan pas di-scroll ke bawah akan membesar 15% (1.15).
   const backgroundScale = useTransform(scrollYProgress, [0, 1], [1, 2.15]);
 
-  // ── Animasi Mouse Parallax (Gerak ngikutin kursor) ──
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
+  // Fungsi yang dijalankan ketika user melepas palu setelah ditarik
+  const handleDragEnd = (id) => {
+    // Set true untuk mengaktifkan animasi meledak di ID palu tertentu
+    setExplodedGavels((prev) => ({ ...prev, [id]: true }));
 
-  // useSpring biar gerakannya halus/smooth (nggak kaku ngikut kursor)
-  const smoothX = useSpring(mouseX, { stiffness: 100, damping: 50 });
-  const smoothY = useSpring(mouseY, { stiffness: 100, damping: 50 });
-
-  // Range pergerakan palu (misal max 40px ke kiri/kanan/atas/bawah). 
-  // Nilainya dibalik [-1, 1] ke [40, -40] biar efeknya berlawanan arah mouse (lebih natural)
-  const paluMouseX = useTransform(smoothX, [-1, 1], [40, -40]);
-  const paluMouseY = useTransform(smoothY, [-1, 1], [40, -40]);
-
-  // Fungsi untuk menangkap kordinat mouse
-  const handleMouseMove = (event) => {
-    const { clientX, clientY } = event;
-    const { innerWidth, innerHeight } = window;
-    
-    // Normalisasi posisi mouse agar berada di range -1 sampai 1 dari tengah layar
-    const x = (clientX / innerWidth - 0.5) * 2;
-    const y = (clientY / innerHeight - 0.5) * 2;
-    
-    mouseX.set(x);
-    mouseY.set(y);
+    // Hapus ID setelah animasi ledakan selesai (400ms) agar bisa diulang lagi nanti
+    setTimeout(() => {
+      setExplodedGavels((prev) => {
+        const updated = { ...prev };
+        delete updated[id];
+        return updated;
+      });
+    }, 400);
   };
 
   return (
     <section
       ref={containerRef}
-      onMouseMove={handleMouseMove} // <-- Pasang deteksi mouse di area section ini
       className="min-h-screen flex flex-col justify-end pb-[72px] relative overflow-hidden bg-[#060608]"
     >
       {/* ── 1. Background (Scroll Parallax + Zoom) ── */}
       <motion.div
-        style={{ 
-          y: backgroundY, 
-          scale: backgroundScale 
-        }}
+        style={{ y: backgroundY, scale: backgroundScale }}
         className="absolute inset-0 -top-[15%] w-full h-[130%] bg-[url('/images/background3.png')] bg-cover bg-center z-[1] pointer-events-none origin-center"
       />
 
-      {/* ── 2. Palu (Scroll + Mouse Parallax) ── */}
+      {/* ── 2. Palu (Posisi Tetap + Drag & Snap Back + Shockwave Effect) ── */}
       <motion.div
-        style={{ y: paluScrollY }} // Efek scroll di pasang di div pembungkus
-        className="absolute inset-0 -top-[15%] w-full h-[130%] z-[4] pointer-events-none"
+        style={{ y: paluScrollY }} 
+        className="absolute inset-0 -top-[15%] w-full h-[130%] z-[3] pointer-events-none overflow-hidden"
       >
-        <motion.div
-          style={{ x: paluMouseX, y: paluMouseY }} // Efek mouse dipasang di gambar langsung
-          className="w-full h-full bg-[url('/images/palu3.png')] bg-cover bg-center"
-        />
+        <div className="relative w-full h-full">
+          {FIXED_GAVELS.map((gavel) => (
+            <div
+              key={gavel.id}
+              className="absolute pointer-events-auto"
+              style={{
+                top: gavel.top,
+                left: gavel.left,
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              {/* EFEK CAHAYA MELEDAK / SHOCKWAVE (Ditaruh di belakang palu) */}
+              <AnimatePresence>
+                {explodedGavels[gavel.id] && (
+                  <motion.div
+                    initial={{ scale: 0, opacity: 1 }}
+                    animate={{ 
+                      scale: gavel.scale * 2.8, // Ukuran ledakan menyesuaikan skala palu
+                      opacity: 0 
+                    }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.38, ease: "easeOut" }}
+                    className="absolute inset-0 m-auto w-24 h-24 rounded-full pointer-events-none z-0"
+                    style={{
+                      // Menggunakan kombinasi gradasi radial putih & emas transparan untuk efek kilauan magis
+                      background: "radial-gradient(triangle, rgba(212,175,55) 0%, rgba(212,175,55) 100%, transparent 100%)",
+                      filter: "blur(1px)"
+                    }}
+                  />
+                )}
+              </AnimatePresence>
+
+              {/* KOMPONEN UTAMA PALU */}
+              <motion.div
+                drag
+                dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
+                dragElastic={0.6}
+                dragTransition={{ bounceStiffness: 450, bounceDamping: 14 }}
+                onDragEnd={() => handleDragEnd(gavel.id)} // <--- Pemicu efek ledakan cahaya
+                style={{
+                  rotate: gavel.rotate,
+                  scale: gavel.scale,
+                }}
+                whileHover={{ scale: gavel.scale * 1.05 }}
+                whileTap={{ scale: gavel.scale * 1.15, cursor: "grabbing" }}
+                className="w-20 h-20 sm:w-28 sm:h-28 bg-[url('/images/palu4.png')] bg-contain bg-center bg-no-repeat drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] cursor-grab relative z-10"
+              />
+            </div>
+          ))}
+        </div>
       </motion.div>
 
       {/* ── 3. Higuruma — STATIC ── */}
